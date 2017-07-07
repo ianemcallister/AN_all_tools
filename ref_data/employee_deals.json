@@ -1,0 +1,59 @@
+{
+	"ONq0cDPusYNMsg3XBpRC": {
+		"first_name": "Lindsey",
+		"last_name": "Newby",
+		"roles": {
+			"cooker": {
+				"base_rate": {
+					"1x": 1125,
+					"1.5x": 1688
+				},
+				"commission": {
+					"tier_1": {
+						"sales_per_hour": 20000,
+						"pay_per_hour": 1500
+					},
+					"tier_2": {
+						"sales_per_hour": 25000,
+						"pay_per_hour": 2000
+					}
+				}
+			},
+			"seller": {
+				"base_rate": {
+					"1x": 1125,
+					"1.5x": 1688
+				},
+				"commission": {
+					"tier_1": {
+						"sales_per_hour": 10000,
+						"pay_per_hour": 1500
+					},
+					"tier_2": {
+						"sales_per_hour": 15000,
+						"pay_per_hour": 2000
+					}
+				}
+			},
+			"solo": {
+				"base_rate": {
+					"1x": 1125,
+					"1.5x": 1688
+				},
+				"commission": {
+					"tier_1": {
+						"sales_per_hour": 10000,
+						"pay_per_hour": 1500
+					},
+					"tier_2": {
+						"sales_per_hour": 15000,
+						"pay_per_hour": 2000
+					}
+				}
+			}
+		}
+	},
+	"UJBeCCEokTlGWtrLRJ": {
+
+	}
+}

@@ -1,0 +1,31 @@
+{
+	"2017": {
+		"07": {
+			"01": {
+				"FM97005_01_02": {
+					"device": "ah-nuts2",
+					"sales_begin": "2017-07-01T00:08:00-08:00",
+					"sales_end": "2017-07-01T00:13:30-08:00",
+					"setup": "2017-07-01T00:06:00-08:00",
+					"wrap_out": "2017-07-01T00:14:15-08:00",
+					"pick_up": "2017-07-01T00:05:30-08:00",
+					"drop_off": "2017-07-01T00:14:45-08:00",
+					"assigned": {
+						"cooker": {
+							"id":"ONq0cDPusYNMsg3XBpRC",
+							"clock-in": "pick_up",
+							"clock-out": "sales_end"
+						},
+						"seller": {
+							"id": "UJBeCCEokTlGWtrLRJ",
+							"clock-in": "sales_begin",
+							"clock-out": "drop_off"
+						}
+					}
+				},
+				"FM97301_02_01": {},
+				"FM97015_01_01": {}
+			}
+		}
+	}
+}

@@ -1,0 +1,23 @@
+[
+	{
+		"id": "qqIuvd3uIVBPUmQr3vr4",
+		"clockin_time": "2017-07-01T00:05:30-08:00",
+		"clockout_time": "2017-07-01T00:13:30-08:00",
+		"employee_id": "ONq0cDPusYNMsg3XBpRC",
+		"clockin_location_id": "14E8S7P16JQDM",
+		"clockout_location_id": "14E8S7P16JQDM",
+		"deleted": false,
+		"created_at": "2017-07-01T00:05:30-08:00",
+		"updated_at": "2017-07-01T00:13:30-08:00"
+	},
+	{
+		"id": "lj_qARs-U8wsvf3tr0N_",
+		"clockin_time": "2017-07-01T00:08:00-08:00",
+		"clockout_time": "2017-07-01T00:14:45-08:00",
+		"employee_id": "UJBeCCEokTlGWtrLRJ",
+		"clockin_location_id": "14E8S7P16JQDM",
+		"deleted": false,
+		"created_at": "2017-07-01T00:08:00-08:00",
+		"updated_at": "2017-07-01T00:14:45-08:00"
+	}
+]

@@ -1,0 +1,11 @@
+{
+  "name": "all_tools",
+  "version": "1.0.0",
+  "description": "Various Tools for Employee Management",
+  "main": "server/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ian McAllister",
+  "license": "MIT"
+}
