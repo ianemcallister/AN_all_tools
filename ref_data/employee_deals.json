@@ -1,12 +1,13 @@
 {
 	"ONq0cDPusYNMsg3XBpRC": {
-		"first_name": "Lindsey",
-		"last_name": "Newby",
+		"supervisor": "PFIbWPErF9uOwb_cqp2f",
 		"roles": {
 			"cooker": {
 				"base_rate": {
 					"1x": 1125,
-					"1.5x": 1688
+					"1.5x": 1688,
+					"reg_hours_per_day": 8,
+					"reg_hours_per_week": 40
 				},
 				"commission": {
 					"tier_1": {
@@ -22,7 +23,9 @@
 			"seller": {
 				"base_rate": {
 					"1x": 1125,
-					"1.5x": 1688
+					"1.5x": 1688,
+					"reg_hours_per_day": 8,
+					"reg_hours_per_week": 40
 				},
 				"commission": {
 					"tier_1": {
@@ -38,7 +41,9 @@
 			"solo": {
 				"base_rate": {
 					"1x": 1125,
-					"1.5x": 1688
+					"1.5x": 1688,
+					"reg_hours_per_day": 8,
+					"reg_hours_per_week": 40
 				},
 				"commission": {
 					"tier_1": {
