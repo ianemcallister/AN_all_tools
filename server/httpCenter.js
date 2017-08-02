@@ -115,9 +115,10 @@ function _distill_Sqr_Paginated_Link(rawLink) {
 
 };
 
-function _stringToJSON(string) {
-	return JSON.parse(string);
-}
+/*
+*	_stringToJSON
+*/
+function _stringToJSON(string) { return JSON.parse(string); }
 
 /*
 *	_get
@@ -446,11 +447,23 @@ function _collectPaginatedSquareSalesData(request) {
 				_collectPaginatedSquareSalesData(newRequest).then(function(newResponse) {
 
 					//when responses comes back from this promise
-					//add newResponse, and response to the array, and
-					newResponse.push(1);
+					//turn the old response into an object
+					
+					//access the data buffer
+					response.buffer().then(function(data) {
+							
+						//console.log(JSON.parse(data.toString('utf8'))); //TODO: REMOVE THIS LATER
 
-					//keep resolving upward
-					resolve(newResponse);
+						//turn the response into an object
+						var salesDataObject = data.toString('utf8');
+
+						//add the data to the array
+						newResponse.push(salesDataObject);
+
+						//and pass it back up the chain
+						resolve(newResponse);
+
+					});
 
 					//if there's an error pass it back up
 				}).catch(function(e) {
@@ -464,11 +477,21 @@ function _collectPaginatedSquareSalesData(request) {
 				//define local array
 				var responseArray = [];
 
-				//add the response to an array
-				responseArray.push(1);
+				//access the data buffer
+				response.buffer().then(function(data) {
+						
+					//console.log(JSON.parse(data.toString('utf8'))); //TODO: REMOVE THIS LATER
 
-				//and pass it back up the chain
-				resolve(responseArray);
+					//turn the response into an object
+					var salesDataObject = data.toString('utf8');
+
+					//add the data to the array
+					responseArray.push(salesDataObject);
+
+					//and pass it back up the chain
+					resolve(responseArray);
+
+				});
 
 			}
 
