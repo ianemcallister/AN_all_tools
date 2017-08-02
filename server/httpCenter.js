@@ -4,19 +4,117 @@ var fetch = require('node-fetch');
 
 //define the module
 var httpCenter = {
+	_squareSalesDataRequest: _squareSalesDataRequest,
+	_squareSalesDataRequest_urlOnly: _squareSalesDataRequest_urlOnly,
+	_fetch: _fetch,
+	_distill_Sqr_Paginated_Link: _distill_Sqr_Paginated_Link,
 	_stringToJSON: _stringToJSON,
 	_get: _get,
 	_getJSON: _getJSON,
-	_GET: _GET,
+	_square_get_possiblePagination: _square_get_possiblePagination,
+	//_GET: _GET,
 	_accessSquareUp: _accessSquareUp,
+	_collectPaginatedSquareSalesData:_collectPaginatedSquareSalesData,
+	dowloadSquareSalesData: dowloadSquareSalesData,
 	collectRequiredData: collectRequiredData
 };
+
+/*
+*	_squareSalesDataRequest_urlOnly
+*/
+function _squareSalesDataRequest_urlOnly(urlOnly) {
+
+	//define local variables
+	var requestObject = {
+		service: 'squareup',
+		url: urlOnly,
+		method: 'GET',
+		headers: {
+			'Authorization': 'Bearer ' + process.env.SQUARE_APP_TOKEN,
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		}
+	}
+
+	return requestObject;
+};
+
+/*
+*	_squareSalesDataRequest
+*/
+function _squareSalesDataRequest(params) {
+
+	//from the params build a request object
+	var requestObject = {
+		service: 'squareup',
+		url: 'https://connect.squareup.com/v1/' + params.locationId + '/payments?begin_time=' + params.day.start + '&end_time=' + params.day.end,
+		method: 'GET',
+		headers: {
+			'Authorization': 'Bearer ' + process.env.SQUARE_APP_TOKEN,
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		}
+	}
+
+	return requestObject;
+}
 
 /*
 *	String To JSON
 *
 *	Converts a string into JSON
 */
+
+/*
+*	_fetch
+*
+*
+*/
+function _fetch(request) {
+
+	console.log('fetching'); 	//TODO: REMOVE THIS LATER
+
+	//define local variables
+	var url = request.url;
+	var options = {
+		method: 'GET',
+		headers: request.headers
+	};
+
+	//return async work
+	return new Promise(function(resolve, reject) {
+
+		//console.log(request);	//TODO: TAKE THIS OUT LATER
+
+		fetch(url, options).then(function(response) {
+
+			//console.log(response);	//TODO: REMOVE THIS LATER
+
+			//pass the response back
+			resolve(response);
+
+			//pass an error back up
+		}).catch(function(e) {
+			reject(e);
+		});
+
+	});
+
+};
+
+function _distill_Sqr_Paginated_Link(rawLink) {
+
+	var newSplitLink = rawLink.split(';');
+	var onlyLink = newSplitLink[0];
+	var linkLength = onlyLink.length;
+	var newLink = onlyLink.substring(1,linkLength-1);
+
+	//console.log('_distill_Sqr_Paginated_Link', newLink);	//TODO: REMOVE THIS LATER
+
+	return newLink;
+
+};
+
 function _stringToJSON(string) {
 	return JSON.parse(string);
 }
@@ -35,32 +133,113 @@ function _get(request) {
 		headers: request.headers
 	};
 
-	//TODO: REMOVE THIS LATER WHEN IT ISN'T NEEDED
-	console.log("_getting");
-
 	//return promise for async work
 	return new Promise(function(resolve, reject) {
 		
+		//TODO: REMOVE THIS LATER WHEN IT ISN'T NEEDED
+		//console.log("_getting");
+		//console.log('url:', url);
+		//console.log('options:', options);
+
 		//fetch required data
 		fetch(url, options).then(function(response) {
 			
-			//TODO: REMOVE THIS LATER WHEN NOT NEEDED ANYMORE
-			//console.log(url, response.headers._headers.link);
+			//TODO: TAKE THIS OUT LATER
+			console.log('got a response from fetch');
+			//console.log(response);
 
-			//when the response comes back, look at the buffer
-			response.buffer().then(function(data) {
-				
-				//TODO: REMOVE THIS LATER
-				//console.log(JSON.parse(data.toString('utf8')));
-
-				//if it's good put the data back together
-				resolve(data.toString('utf8'));
-
-			});
+			//pass the response back up
+			resolve(response);
 
 		}).catch(function(error) {
 			//notify the user
-			console.log('error', error);
+			console.log('this error error', error);
+
+			//if there was an error, reject
+			reject(error);
+		});
+
+	});
+
+};
+
+/*
+*	_square_get_possiblePagination
+*
+*	This method is designed as a recursive method that can handle
+*	paginated responses if need be.
+*
+*/
+function _square_get_possiblePagination(request) {
+
+	//define local variables
+	var url = request.url;
+	var options = {
+		method: 'GET',
+		headers: request.headers
+	};
+
+	//return promise for async work
+	return new Promise(function(resolve, reject) {
+
+		//TODO: REMOVE THIS LATER WHEN IT ISN'T NEEDED
+		//console.log("_getting");
+		//console.log('url:', url);
+		//console.log('options:', options);
+
+		//fetch required data
+		fetch(url, options).then(function(response) {
+			
+			//TODO: TAKE THIS OUT LATER
+			console.log('got a response from fetch');
+			//console.log(response.headers._headers.link);
+
+			//when successful data comes back if there is a link, follow the link
+			if(response.headers._headers.link != undefined) {
+				
+				//local variable
+				var newRawLink = response.headers._headers.link[0];
+				var newSplitLink = newRawLink.split(';');
+				var onlyLink = newSplitLink[0];
+				var linkLength = onlyLink.length;
+				var newLink = onlyLink.substring(1,linkLength-1);
+
+				//if there is a link then it is a paginated response
+				console.log('there was a LINK', newLink); //TODO: TAKE THIS OUT LATER
+
+				//rebuild the request
+				request.url = newLink;
+
+				//send it again
+				_square_get_possiblePagination(request).then(function(response) {
+					console.log('good response');
+				}).catch(function(e) {
+					console.log('shitty response');
+				});
+
+
+			} else {
+
+				//if no link exists return the data as is.
+				console.log('there was NO LINK'); //TODO: TAKE THIS OUT LATER
+				
+				response.buffer().then(function(data) {
+						
+					//TODO: REMOVE THIS LATER
+					//console.log(JSON.parse(data.toString('utf8')));
+
+					//if it's good put the data back together
+					resolve(data.toString('utf8'));
+
+				});
+			}
+			
+			//pass the response back up
+			//resolve(response);
+
+		}).catch(function(error) {
+			//notify the user
+			console.log('this error error', error);
 
 			//if there was an error, reject
 			reject(error);
@@ -84,6 +263,9 @@ function _getJSON(request) {
 		
 			//format the returned value
 			var newJSON = _stringToJSON(response);
+
+			//TODO: REMOVE THIS LATER
+			//console.log(newJSON);
 
 			//pass it up
 			resolve(newJSON);
@@ -127,6 +309,11 @@ function _GET(request) {
 				//if we need to get JSON data, reach out accordingly
 				_getJSON(request).then(function(result) {
 
+					//TODO: REMOVE THIS LATER
+					console.log(result.length);
+
+					//pass the data back up
+					resolve(1);
 
 				}).catch(function(e) {
 
@@ -154,6 +341,9 @@ function _GET(request) {
 */
 function _accessSquareUp(request) {
 	
+	//TODO: TAKE THIS OUT LATER
+	console.log('got to _accessSquareUp');
+
 	//define local variables
 	var methods = {
 		"GET": 0,
@@ -168,18 +358,51 @@ function _accessSquareUp(request) {
 
 			case 0: 	//if it's a get method, access the get function
 
-				//send request via _GET
-				_GET(request).then(function(response) {
+				//TODO: TAKE THIS OUT LATER
+				console.log('in GET switch');
 
-					//when the request comes back, pass the response back up
-					resolve(response);
+				//send request via _get
+				_square_get_possiblePagination(request).then(function(response) {
 
 				}).catch(function(e) {
-
-					//if there was an error, pass that along as well
+					console.log('back in _accessSquareUp, an error occured', e);
 					reject(e);
-
 				});
+				/*_get(request).then(function(response) {
+
+					//when the response comes back, look for pagination
+					if(response.headers._headers.link != undefined) {
+
+						//if there is a link then it is a paginated response
+						console.log('there was a LINK'); //TODO: TAKE THIS OUT LATER
+
+
+
+					} else {
+
+						//if no link exists return the data as is.
+						console.log('there was NO LINK'); //TODO: TAKE THIS OUT LATER
+					}
+
+
+					//when the response comes back, look at the buffer
+					//response.buffer().then(function(data) {
+						
+						//TODO: REMOVE THIS LATER
+					//	console.log(JSON.parse(data.toString('utf8')));
+
+						//if it's good put the data back together
+					//	resolve(data.toString('utf8'));
+
+					//});
+
+
+					resolve(1);
+					
+				}).catch(function(e) {
+					console.log('back in _accessSquareUp, an error occured', e);
+					reject(e);
+				});*/
 
 				break;
 			case 1:
@@ -190,13 +413,105 @@ function _accessSquareUp(request) {
 				break;
 		};
 
-		console.log('got this request', request);
+		//console.log('got this request', request);
 
 		resolve(1);
 
 	});
 
 };
+
+/*
+*	_collectPaginatedSquareSalesData
+*
+*
+*/
+function _collectPaginatedSquareSalesData(request) {
+
+	console.log('_collectPaginatedSquareSalesData');	//TODO: Take this out later
+
+	//return async work
+	return new Promise(function(resolve, reject) {
+
+		//fetch data
+		_fetch(request).then(function(response) {
+
+			//if the response contains a link, recurse
+			if(response.headers._headers.link != undefined) {
+
+				//build the new request
+				var newURL = _distill_Sqr_Paginated_Link(response.headers._headers.link[0]);
+				var newRequest = _squareSalesDataRequest_urlOnly(newURL);
+
+				_collectPaginatedSquareSalesData(newRequest).then(function(newResponse) {
+
+					//when responses comes back from this promise
+					//add newResponse, and response to the array, and
+					newResponse.push(1);
+
+					//keep resolving upward
+					resolve(newResponse);
+
+					//if there's an error pass it back up
+				}).catch(function(e) {
+					reject(e);
+				});
+
+			} else {
+
+				//if no link is found you've reached the bottom
+				
+				//define local array
+				var responseArray = [];
+
+				//add the response to an array
+				responseArray.push(1);
+
+				//and pass it back up the chain
+				resolve(responseArray);
+
+			}
+
+			//if there's an error pass it back up
+		}).catch(function(e) {
+			reject(e);
+		});
+	
+	});
+
+}
+
+/*
+*	dowloadSalesData(params)
+*
+*	This function collects all the raw sales data as defined
+*	by the parameters
+*
+*/
+function dowloadSquareSalesData(params) {
+
+	//define local variables
+	var request = _squareSalesDataRequest(params);
+
+	//return async work
+	return new Promise(function(resolve, reject) {
+		
+		//get an array of data
+		_collectPaginatedSquareSalesData(request).then(function(rawSqrSalesData) {
+
+			console.log(rawSqrSalesData);	//TODO: TAKE THIS OUT LATER
+
+			//pass the number of records back
+			resolve(rawSqrSalesData.length);
+
+			//if we cameback with problems, pass them up
+		}).catch(function(e) {
+			reject(e);
+		});
+
+	});
+
+}
 
 /*
 *	Collect Required Data

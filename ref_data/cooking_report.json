@@ -1,0 +1,19 @@
+{
+	"mobile_unit": "kit_01_(oregon)",
+	"dest_warehouse": "beaverton_warehouse",
+	"converted_inventory": {
+		"staged_peanuts_gal": 2,
+		"staged_cashews_gal": 2,
+		"staged_pecans_quart": 18,
+		"staged_almonds_quart": 6
+	},
+	"batches_cooked": {
+		"peanut": 2,
+		"cashew": 2,
+		"cn_pec": 2,
+		"dr_pec": 4,
+		"sr_pec": 12,
+		"sr_alm": 2,
+		"cn_alm": 4
+	}
+}

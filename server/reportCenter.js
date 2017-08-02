@@ -26,7 +26,7 @@ function _buildEmployeeDERemail(params) {
 		//schedule from firebase
 		//shifts from firebase
 		//timecards from squareup
-		{ 
+		/*{ 
 			service: 'squareup', 
 			url: 'https://connect.squareup.com/v1/me/timecards',
 			method: 'GET',
@@ -35,8 +35,18 @@ function _buildEmployeeDERemail(params) {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			} 
-		}
+		}*/
 		//daily tranactions from squareup
+		{
+			service: 'squareup',
+			url: 'https://connect.squareup.com/v1/' + params.locationId + '/payments?begin_time=' + params.day.start + '&end_time=' + params.day.end,
+			method: 'GET',
+			headers: {
+				'Authorization': 'Bearer ' + process.env.SQUARE_APP_TOKEN,
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			}
+		}
 		//employee records from squareup
 	];
 
@@ -98,7 +108,7 @@ function _compileEarningsReport(params) {
 		//define all required async work
 		var finalReport = {
 			discrepencies: false,	//TODO: ADD DISCREPENCY CHECKING LATER
-			emplyeeReport: _buildEmployeeDERemail(params),
+			employeeReport: _buildEmployeeDERemail(params),
 			supervisorReport: {}	//TODO: ADD A SUPERVISOR REPORT LATER
 		};
 
@@ -106,7 +116,7 @@ function _compileEarningsReport(params) {
 		Promise.all(
 			[
 				finalReport.discrepencies, 
-				finalReport.emplyeeReport, 
+				finalReport.employeeReport, 
 				finalReport.supervisorReport
 			]).then(function(allData) {
 

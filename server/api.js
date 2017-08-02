@@ -9,12 +9,56 @@
 
 //define dependencies
 var reportCenter = require('./reportCenter');
+var httpCenter = require('./httpCenter');
+var dataCenter = require('./dataCenter');
+var fileCenter = require('./fileCenter');
 
 //define the module
 var api = {
+	calculateHourlySales: calculateHourlySales,
 	dailyEarningsReports: dailyEarningsReports
 };
 
+
+function calculateHourlySales(params) {
+
+	console.log("api.calculateHourlySales"); //take this out later
+
+	//return async work
+	return new Promise(function(resolve, reject) {
+
+		//download all records
+		httpCenter.dowloadSquareSalesData(params).then(function(allSalesRecords) {
+
+			console.log('allSalesRecords:', allSalesRecords);	//TODO: TAKE THIS OUT LATER
+
+			//when the records come back process them
+			dataCenter.squareSales_to_hourlySales(allSalesRecords).then(function(hrlySalesRecords) {
+
+				//after the records have been processed, save them
+				fileCenter.saveJSON_to_file(hrlySalesRecords).then(function(result) {
+
+					//when everything has successfully saved, return success
+					resolve(1);
+
+					//if we cameback with problems, pass them up	
+				}).catch(function(e) {
+					reject(e);
+				});
+
+				//if we cameback with problems, pass them up
+			}).catch(function(e) {
+				reject(e);
+			});
+
+			//if we cameback with problems, pass them up
+		}).catch(function(e) {
+			reject(e);
+		});
+
+	});
+
+};
 
 /* 
 *	The Daily Earnings Report
